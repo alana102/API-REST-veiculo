@@ -1,7 +1,7 @@
 from faker import Faker
 import random
 import pandas as pd
-from deltalake import WriterProperties, write_deltalake,DeltaTable
+from deltalake import WriterProperties, write_deltalake
 
 path = "src/database/deltalake-veiculo"
 ultimo_id = "src/database/ultimo_id.seq"
@@ -65,8 +65,4 @@ for i in range(10):
 
     with open(ultimo_id, "w") as id:
         id.write(str(next_id))
-
-dt = DeltaTable(path)
-lista = dt.to_pyarrow_table().to_pylist()
-print(lista)
     
