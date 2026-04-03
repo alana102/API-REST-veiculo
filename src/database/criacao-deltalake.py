@@ -2,11 +2,7 @@ import pandas as pd
 from deltalake import WriterProperties, write_deltalake, DeltaTable
 import os
 from models.veiculo_model import Veiculo
-from database.povoando import ultimo_id
 import shutil
-
-
-##shutil.rmtree(path, ignore_errors=True)
 
 class BancoVeiculo:
 
@@ -14,6 +10,8 @@ class BancoVeiculo:
         self.path = "src/database/deltalake-veiculo"
         self.ultimo_id = "src/database/ultimo_id.seq"
         self.wp = WriterProperties(compression="ZSTD")
+
+        shutil.rmtree(self.path, ignore_errors=True)
 
         if not os.path.exists(self.path):
             df_vazio = pd.DataFrame({"id" : pd.Series(dtype="int64"), 
