@@ -1,8 +1,9 @@
 import pandas as pd
 from deltalake import WriterProperties, write_deltalake, DeltaTable
-import shutil
 import os
+from models.veiculo_model import Veiculo
 from database.povoando import ultimo_id
+import shutil
 
 
 ##shutil.rmtree(path, ignore_errors=True)

@@ -1,7 +1,7 @@
 from faker import Faker
 import random
 import pandas as pd
-from deltalake import WriterProperties, write_deltalake,DeltaTable
+from deltalake import WriterProperties, write_deltalake
 
 path = "src/database/deltalake-veiculo"
 ultimo_id = "src/database/ultimo_id.seq"
@@ -54,18 +54,15 @@ for i in range(10):
     quilometragem = random.randint(0, 200_000)
     categoria = random.choice(categorias)
     ar_condicionado = fake.boolean()
+    valor = random.randint(50, 300)
     estado = random.choice(status)
 
     df_new = pd.DataFrame({"id" : [next_id], "tipo": [tipo], "modelo" : [modelo], "ano" : [ano], "placa" : [placa], "cambio" : [cambio],
-                           "cor" : [cor], "tipo_combustivel" : [tipo_combustivel], "num_portas" : [num_portas], "quilometragem" : [quilometragem], "categoria" : [categoria],
-                           "ar_condicionado" : [ar_condicionado], "status" : [estado]})
+                           "cor" : [cor], "tipo_combustivel" : [tipo_combustivel], "num_portas" : [num_portas], "quilometragem" : [quilometragem], 
+                           "categoria" : [categoria], "ar_condicionado" : [ar_condicionado], "valor_diaria" : [valor], "status" : [estado]})
     
     write_deltalake(path, df_new, mode="append", writer_properties=wp)
 
     with open(ultimo_id, "w") as id:
         id.write(str(next_id))
-
-dt = DeltaTable(path)
-lista = dt.to_pyarrow_table().to_pylist()
-print(lista)
     
