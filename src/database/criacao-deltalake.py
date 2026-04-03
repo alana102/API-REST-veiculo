@@ -28,6 +28,7 @@ class BancoVeiculo:
                                     "quilometragem" : pd.Series(dtype="int64"),
                                     "categoria" : pd.Series(dtype="string"),
                                     "ar_condicionado" : pd.Series(dtype="bool"),
+                                    "valor_diaria" : pd.Series(dtype="float"),
                                     "status" : pd.Series(dtype="string")})
             
             write_deltalake(self.path, df_vazio, mode = "overwrite", writer_properties = self.wp)
@@ -58,6 +59,7 @@ class BancoVeiculo:
                                "quilometragem": [veiculo.quilometragem],
                                "categoria": [veiculo.categoria],
                                "ar_condicionado": [veiculo.ar_condicionado],
+                               "valor_diaria" : [veiculo.valor_diaria],
                                "status": [veiculo.status],
                                })
         write_deltalake(self.path, df_new, mode="append", writer_properties=self.wp)
@@ -99,6 +101,7 @@ class BancoVeiculo:
                 "quilometragem": f"{veiculo.quilometragem}",
                 "categoria": f"'{veiculo.categoria}'",
                 "ar_condicionado": "true" if veiculo.ar_condicionado else "false",
+                "valor_diaria" : f"{veiculo.valor_diaria}",
                 "status": f"'{veiculo.status}'"
             }
         )
