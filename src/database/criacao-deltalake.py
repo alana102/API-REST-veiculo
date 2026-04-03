@@ -21,6 +21,7 @@ df = pd.DataFrame({"id" : pd.Series(dtype="int64"),
                    "quilometragem" : pd.Series(dtype="int64"),
                    "categoria" : pd.Series(dtype="string"),
                    "ar_condicionado" : pd.Series(dtype="bool"),
+                   "valor_diaria" : pd.Series(dtype="float64"),
                    "status" : pd.Series(dtype="string")})
 
 write_deltalake(path, df, mode="overwrite", writer_properties=wp)
