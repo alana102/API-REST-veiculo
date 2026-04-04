@@ -1,7 +1,7 @@
 import pandas as pd
 from deltalake import WriterProperties, write_deltalake, DeltaTable
 import os
-from models.veiculo_model import Veiculo
+from src.models.veiculo_model import Veiculo
 import shutil
 
 class BancoVeiculo:
@@ -40,7 +40,9 @@ class BancoVeiculo:
             conteudo = id.read()
             id_antigo = int(conteudo)
 
-        df_busca = DeltaTable(self.path).to_pandas(filters=[("placa", "=", veiculo.placa)])
+        df_total = DeltaTable(self.path).to_pandas()
+        
+        df_busca = df_total[df_total["placa"] == veiculo.placa]
 
         if not df_busca.empty:
             raise ValueError("Veículo já existente")

@@ -1,0 +1,22 @@
+# Ambientes Virtuais
+.venv/
+venv/
+env/
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Banco de Dados Delta Lake e Arquivos de Estado
+src/database/deltalake-veiculo/
+src/database/ultimo_id.seq
+
+# Arquivos de IDE
+.idea/
+.vscode/
+
+# Ferramentas macOS/Windows
+.DS_Store
+Thumbs.db
