@@ -1,24 +1,17 @@
 from fastapi import APIRouter, HTTPException
 from src.models.veiculo_model import Veiculo
+from src.database.criacao_deltalake import BancoVeiculo
 import hashlib
 
-router = APIRouter(
-    prefix="/veiculos",
-)
+router = APIRouter(prefix="/veiculos", tags=["CRUD de Veículos"])
+db = BancoVeiculo()
 
 @router.post("/", status_code=201)
 def criar_veiculo(veiculo: Veiculo):
-    dados = veiculo.model_dump(exclude={"id"})
-
-    placa_bytes = dados["placa"].encode('utf-8')
-    dados["placa"] = hashlib.sha256(placa_bytes).hexdigest()
     
     try:
-        # aqui entraria a função para inserir os dados no banco de dados
-
-        # simulação
-        novo_id = 999 
-        return {"mensagem": "Veículo criado com sucesso!", "id": novo_id}
+        db.insert(veiculo)
+        return {"mensagem": "Veículo criado com sucesso!"}
         
     except Exception as erro:
         raise HTTPException(status_code=500, detail=str(erro))
@@ -26,25 +19,17 @@ def criar_veiculo(veiculo: Veiculo):
 @router.get("/{id}")
 def buscar_veiculo(id: int):
     try:
-        # aqui entraria a função para buscar o veiculo no banco de dados
-        
-        # simulação
-        veiculo_mock = {"id": id, "modelo": "Veículo de Teste", "status": "Disponível"}
-        
-        if not veiculo_mock:
-            raise HTTPException(status_code=404, detail="Veículo não encontrado.")
-            
-        return veiculo_mock
-    except HTTPException:
-        raise
+        df_veiculo = db.get(id)
+        return df_veiculo.to_dict(orient="records")[0] 
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
     except Exception as erro:
         raise HTTPException(status_code=500, detail=str(erro))
     
 @router.put("/{id}")
 def atualizar_veiculo(id: int, veiculo: Veiculo):
-    dados_atualizados = veiculo.model_dump(exclude={"id"})
     try:
-        # aqui entraria a função para atualizar os dados do veiculo no banco de dados
+        db.update(id, veiculo)
         return {"mensagem": f"Veículo {id} atualizado com sucesso!"}
     except Exception as erro:
         raise HTTPException(status_code=500, detail=f"Erro ao atualizar: {str(erro)}")
@@ -52,7 +37,7 @@ def atualizar_veiculo(id: int, veiculo: Veiculo):
 @router.delete("/{id}")
 def apagar_veiculo(id: int):
     try:
-        # aqui entraria a função para apagar o veiculo do banco de dados
-        return {"mensagem": f"Veículo {id} removido permanentemente!"}
+        db.delete(id)
+        return {"mensagem": f"Veículo {id} removido!"}
     except Exception as erro:
-        raise HTTPException(status_code=500, detail=f"Erro ao apagar: {str(erro)}")    
+        raise HTTPException(status_code=500, detail=str(erro))

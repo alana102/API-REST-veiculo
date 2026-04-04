@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
+from deltalake import DeltaTable
 import io
 import zipfile
 
@@ -7,22 +8,19 @@ router = APIRouter(
     prefix="/exportar",
     tags=["Exportação"]
 )
+caminho_banco = "src/database/deltalake-veiculo"
 
 def gerador_csv_lotes():
     yield "id,tipo,modelo,ano,placa,status\n"
     
-    # codigo para ler o delta lake em pedaços
+    dt = DeltaTable(caminho_banco)
     
-    # simulação
-    lotes_simulados = [
-        [{"id": 1, "tipo": "Carro", "modelo": "Civic", "ano": 2023, "placa": "ABC-123", "status": "Disponível"}],
-        [{"id": 2, "tipo": "Moto", "modelo": "Biz", "ano": 2022, "placa": "XYZ-987", "status": "Alugado"}]
-    ]
+    lotes = dt.to_pyarrow_dataset().to_batches(batch_size=1000)
     
-    for lote in lotes_simulados:
-        for v in lote:
-            linha = f"{v['id']},{v['tipo']},{v['modelo']},{v['ano']},{v['placa']},{v['status']}\n"
-            yield linha
+    for lote in lotes:
+        df = lote.to_pandas()
+        for v in df.to_dict(orient="records"):
+            yield f"{v['id']},{v['tipo']},{v['modelo']},{v['ano']},{v['placa']},{v['status']}\n"
 
 @router.get("/csv")
 def exportar_csv():
@@ -39,13 +37,12 @@ def gerador_zip_lotes():
     with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as ficheiro_zip:
         conteudo_csv = "id,tipo,modelo,ano,placa,status\n"
         
-        # simulação
-        lotes_simulados = [
-            [{"id": 1, "tipo": "Carro", "modelo": "Civic", "ano": 2023, "placa": "ABC-123", "status": "Disponível"}]
-        ]
+        dt = DeltaTable(caminho_banco)
+        lotes = dt.to_pyarrow_dataset().to_batches(batch_size=1000)
         
-        for lote in lotes_simulados:
-            for v in lote:
+        for lote in lotes:
+            df = lote.to_pandas()
+            for v in df.to_dict(orient="records"):
                 conteudo_csv += f"{v['id']},{v['tipo']},{v['modelo']},{v['ano']},{v['placa']},{v['status']}\n"
         
         ficheiro_zip.writestr("dados.csv", conteudo_csv)

@@ -1,8 +1,8 @@
 import pandas as pd
 from deltalake import WriterProperties, write_deltalake, DeltaTable
+import pyarrow.dataset as ds
 import os
-from models.veiculo_model import Veiculo
-import shutil
+from src.models.veiculo_model import Veiculo
 
 class BancoVeiculo:
 
@@ -10,8 +10,6 @@ class BancoVeiculo:
         self.path = "src/database/deltalake-veiculo"
         self.ultimo_id = "src/database/ultimo_id.seq"
         self.wp = WriterProperties(compression="ZSTD")
-
-        shutil.rmtree(self.path, ignore_errors=True)
 
         if not os.path.exists(self.path):
             df_vazio = pd.DataFrame({"id" : pd.Series(dtype="int64"), 
@@ -25,27 +23,31 @@ class BancoVeiculo:
                                     "num_portas" : pd.Series(dtype="int64"), 
                                     "quilometragem" : pd.Series(dtype="int64"),
                                     "categoria" : pd.Series(dtype="string"),
-                                    "ar_condicionado" : pd.Series(dtype="bool"),
+                                    "ar_condicionado" : pd.Series(dtype="boolean"),
                                     "valor_diaria" : pd.Series(dtype="float"),
                                     "status" : pd.Series(dtype="string")})
             
             write_deltalake(self.path, df_vazio, mode = "overwrite", writer_properties = self.wp)
         
         if not os.path.exists(self.ultimo_id):
-            with open(self.ultimo_id, "w") as id:
-                id.write("0")
+             with open(self.ultimo_id, "w") as id:
+                    id.write("") 
+    
 
     def insert(self, veiculo:Veiculo):
         with open(self.ultimo_id, "r") as id:
             conteudo = id.read()
             id_antigo = int(conteudo)
 
-        df_busca = DeltaTable(self.path).to_pandas(filters=[("placa", "=", veiculo.placa)])
+        dt_dataset = DeltaTable(self.path).to_pyarrow_dataset()
+        ds_filtro = dt_dataset.to_table(filter=ds.field("placa") == veiculo.placa)
 
-        if not df_busca.empty:
+        if ds_filtro.num_rows > 0:
             raise ValueError("Veículo já existente")
 
-        df_new = pd.DataFrame({"id": [id_antigo],
+        novo_id = id_antigo + 1
+
+        df_new = pd.DataFrame({"id": [novo_id],
                                "tipo": [veiculo.tipo],
                                "modelo": [veiculo.modelo],
                                "ano": [veiculo.ano],
@@ -60,10 +62,11 @@ class BancoVeiculo:
                                "valor_diaria" : [veiculo.valor_diaria],
                                "status": [veiculo.status],
                                })
+
         write_deltalake(self.path, df_new, mode="append", writer_properties=self.wp)
 
         with open(self.ultimo_id, "w") as id:
-            id.write(str(id_antigo + 1))
+            id.write(str(novo_id))
 
         return True
 
