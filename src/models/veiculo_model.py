@@ -6,13 +6,13 @@ class Veiculo(BaseModel):
     modelo: str
     ano: int
     placa: str
-    cambio: str
+    cambio: str 
     cor: str
     tipo_combustivel: str
-    num_portas: int
+    num_portas: int | None = Field(default=None)
     quilometragem: int
     categoria: str
-    ar_condicionado: bool
+    ar_condicionado: bool | None = Field(default=None)
     valor_diaria: float
     status: str
 

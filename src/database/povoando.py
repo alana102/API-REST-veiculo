@@ -16,13 +16,11 @@ tipos = {
         "Honda Civic",
         "Toyota Corolla",
         "Chevrolet Onix",
-        "Volkswagen Gol"
-    ],
-    "Moto": [
-        "Honda CG 160",
-        "Yamaha Fazer 250",
-        "Honda Biz",
-        "Yamaha MT-03"
+        "Volkswagen Gol",
+        "Volkswagen T-Cross",
+        "Ferrari",
+        "Mercedes",
+        "Lamborghini"
     ]
 }
 
@@ -30,10 +28,10 @@ status = ["Disponível", "Alugado", "Em manutenção"]
 cambios = ["Manual", "Automático"]
 cores = ["Branco", "Preto", "Prata", "Bege", "Cinza", "Vermelho"]
 combustiveis = ["Diesel", "Gasolina", "Elétrico", "Flex"]
-portas = [1, 2, 4]
+portas = [2, 4]
 categorias = ["Compacto", "SUV", "Premium", "Utilitário"]
 
-for i in range(10):
+for i in range(1000):
     id_atual = 0
     next_id = 0
 
