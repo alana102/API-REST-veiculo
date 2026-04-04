@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class Veiculo(BaseModel):
-    id: int
+    id: int | None = Field(default=None)
     tipo: str
     modelo: str
     ano: int
