@@ -1,5 +1,6 @@
 import pandas as pd
 from deltalake import WriterProperties, write_deltalake, DeltaTable
+import pyarrow.dataset as ds
 import os
 from src.models.veiculo_model import Veiculo
 
@@ -38,11 +39,10 @@ class BancoVeiculo:
             conteudo = id.read()
             id_antigo = int(conteudo)
 
-        df_total = DeltaTable(self.path).to_pandas()
-        
-        df_busca = df_total[df_total["placa"] == veiculo.placa]
+        dt_dataset = DeltaTable(self.path).to_pyarrow_dataset()
+        ds_filtro = dt_dataset.to_table(filter=ds.field("placa") == veiculo.placa)
 
-        if not df_busca.empty:
+        if ds_filtro.num_rows > 0:
             raise ValueError("Veículo já existente")
 
         novo_id = id_antigo + 1
