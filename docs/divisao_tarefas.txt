@@ -1,9 +1,10 @@
 Divisão de tarefas da equipe
 
 Alana Maria:
-- Desenvolveu o banco de dados com deltalake delta-rs
-- Criou a classe da entidade veículo definindo os métodos __init__, __repr__, getters e setters, utilizando pydantic para validação e tipagem de variáveis
-- Desenvolveu a lógica do auto_increment do atributo id utilizando o arquivo ultimo_id.seq
+- Desenvolveu a estrutura do mini banco de dados com deltalake delta-rs;
+- Criou a classe da entidade veículo ("veiculo_model.py") com a definição dos atributos utilizando pydantic para validação e tipagem de dados;
+- Desenvolveu a lógica do AUTO INCREMENT do atributo id utilizando o arquivo "ultimo_id.seq";
+- Desenvolveu o script em Python para povoar o banco de dados deltalake com 1000 registros realistas utilizando a biblioteca Faker e o módulo random;
 
 Clara Cruz:
 - Desenvolveu as operações de CRUD (Create, Read, Update, Delete) no banco de dados
