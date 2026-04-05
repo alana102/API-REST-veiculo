@@ -1,3 +1,4 @@
+import pandas as pd
 from fastapi import APIRouter, HTTPException
 from src.models.veiculo_model import Veiculo
 from src.database.criacao_deltalake import BancoVeiculo
@@ -20,7 +21,12 @@ def criar_veiculo(veiculo: Veiculo):
 def buscar_veiculo(id: int):
     try:
         df_veiculo = db.get(id)
-        return df_veiculo.to_dict(orient="records")[0] 
+
+        veiculo_bruto = df_veiculo.to_dict(orient="records")[0] 
+        
+        veiculo_real = {k: (None if pd.isna(v) else v) for k, v in veiculo_bruto.items()}
+
+        return veiculo_real
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as erro:

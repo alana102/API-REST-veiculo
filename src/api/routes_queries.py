@@ -1,3 +1,4 @@
+import pandas as pd
 from fastapi import APIRouter, Query, HTTPException
 from src.database.criacao_deltalake import BancoVeiculo
 
@@ -22,7 +23,13 @@ def listar_veiculos(
 ):
     try:
         df_paginado = db.list(pagina, tamanho)
-        veiculos_reais = df_paginado.to_dict(orient="records")
+
+        veiculos_brutos = df_paginado.to_dict(orient="records")
+
+        veiculos_reais = [
+            {k: (None if pd.isna(v) else v) for k, v in carro.items()}
+            for carro in veiculos_brutos
+        ]
         
         return {
             "pagina_atual": pagina,
