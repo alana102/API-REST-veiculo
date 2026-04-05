@@ -88,23 +88,24 @@ class BancoVeiculo:
         self.get(id)
 
         dt = DeltaTable(self.path)
+
+        data = veiculo.model_dump()
+        updates = {}
+
+        for key, value in data.items():
+            if value is None:
+                continue
+
+            if isinstance(value, str):
+                updates[key] = f"'{value}'"
+            elif isinstance(value, bool):
+                updates[key] = "true" if value else "false"
+            else:
+                updates[key] = f"{value}"
+
         dt.update(
             predicate=f"id={id}",
-            updates={
-                "tipo": f"'{veiculo.tipo}'",
-                "modelo": f"'{veiculo.modelo}'",
-                "ano": f"{veiculo.ano}",
-                "placa": f"'{veiculo.placa}'",
-                "cambio": f"'{veiculo.cambio}'",
-                "cor": f"'{veiculo.cor}'",
-                "tipo_combustivel": f"'{veiculo.tipo_combustivel}'",
-                "num_portas": f"{veiculo.num_portas}",
-                "quilometragem": f"{veiculo.quilometragem}",
-                "categoria": f"'{veiculo.categoria}'",
-                "ar_condicionado": "true" if veiculo.ar_condicionado else "false",
-                "valor_diaria" : f"{veiculo.valor_diaria}",
-                "status": f"'{veiculo.status}'"
-            }
+            updates=updates
         )
 
         return True

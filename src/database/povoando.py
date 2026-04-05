@@ -31,7 +31,7 @@ combustiveis = ["Diesel", "Gasolina", "Elétrico", "Flex"]
 portas = [2, 4]
 categorias = ["Compacto", "SUV", "Premium", "Utilitário"]
 
-for i in range(1000):
+for i in range(10):
     id_atual = 0
     next_id = 0
 
