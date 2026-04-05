@@ -7,7 +7,10 @@ Alana Maria:
 - Desenvolveu o script em Python para povoar o banco de dados deltalake com 1000 registros realistas utilizando a biblioteca Faker e o módulo random;
 
 Clara Cruz:
-- Desenvolveu as operações de CRUD (Create, Read, Update, Delete) no banco de dados
+- Criou a classe principal do mini banco de dados (BancoVeiculo) referente à entidade veículo;
+- Desenvolveu as operações completas de CRUD e manutenção (insert, get, list, update, delete, count e vacuum);
+- Aplicou a lógica do AUTO INCREMENT na função de insert;
+- Implementou otimizações de memória com PyArrow para paginação e filtros de busca nativos no disco, garantindo que a RAM não seja sobrecarregada.
 
 Vitor Nayan:
 - Desenvolveu a API definindo as rotas
