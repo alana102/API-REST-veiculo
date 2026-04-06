@@ -13,4 +13,5 @@ Clara Cruz:
 - Implementou otimizações de memória com PyArrow para paginação e filtros de busca nativos no disco, garantindo que a RAM não seja sobrecarregada.
 
 Vitor Nayan:
-- Desenvolveu a API definindo as rotas
+- Desenvolveu e integrou todos os endpoints da API REST (CRUD, paginação e contagem) com a classe do banco de dados;
+- Implementou as rotas de exportação de relatórios via streaming (CSV e ZIP), processando os dados em lotes (batches);

@@ -9,6 +9,8 @@ db = BancoVeiculo()
 
 @router.post("/", status_code=201)
 def criar_veiculo(veiculo: Veiculo):
+
+    veiculo.placa = hashlib.sha256(veiculo.placa.encode('utf-8')).hexdigest()
     
     try:
         db.insert(veiculo)
@@ -34,6 +36,8 @@ def buscar_veiculo(id: int):
     
 @router.put("/{id}")
 def atualizar_veiculo(id: int, veiculo: Veiculo):
+    veiculo.placa = hashlib.sha256(veiculo.placa.encode('utf-8')).hexdigest()
+
     try:
         db.update(id, veiculo)
         return {"mensagem": f"Veículo {id} atualizado com sucesso!"}
