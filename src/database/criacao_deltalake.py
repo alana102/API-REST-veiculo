@@ -31,17 +31,13 @@ class BancoVeiculo:
         
         if not os.path.exists(self.ultimo_id):
              with open(self.ultimo_id, "w") as id:
-                    id.write("") 
+                    id.write("0") 
     
 
     def insert(self, veiculo:Veiculo):
-        novo_id = 0
-
         with open(self.ultimo_id, "r") as id:
             conteudo = id.read()
-            if conteudo:
-                id_antigo = int(conteudo)
-                novo_id = id_antigo + 1
+            next_id = int(conteudo)
 
         dt_dataset = DeltaTable(self.path).to_pyarrow_dataset()
         ds_filtro = dt_dataset.to_table(filter=ds.field("placa") == veiculo.placa)
@@ -49,7 +45,7 @@ class BancoVeiculo:
         if ds_filtro.num_rows > 0:
             raise ValueError("Veículo já existente")
 
-        df_new = pd.DataFrame({"id": [novo_id],
+        df_new = pd.DataFrame({"id": [next_id],
                                "tipo": [veiculo.tipo],
                                "modelo": [veiculo.modelo],
                                "ano": [veiculo.ano],
@@ -68,7 +64,7 @@ class BancoVeiculo:
         write_deltalake(self.path, df_new, mode="append", writer_properties=self.wp)
 
         with open(self.ultimo_id, "w") as id:
-            id.write(str(novo_id))
+            id.write(str(next_id + 1))
 
         return True
 

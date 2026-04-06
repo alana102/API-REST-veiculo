@@ -32,13 +32,10 @@ portas = [2, 4]
 categorias = ["Compacto", "SUV", "Premium", "Utilitário"]
 
 for i in range(1000):
-    next_id = 0
 
     with open(ultimo_id, "r") as id:
         id_atual = id.read().strip()
-
-        if id_atual:
-            next_id = int(id_atual) + 1
+        next_id = int(id_atual)
 
     tipo = random.choice(list(tipos.keys()))
     modelo = random.choice(tipos[tipo])
@@ -61,5 +58,5 @@ for i in range(1000):
     write_deltalake(path, df_new, mode="append", writer_properties=wp)
 
     with open(ultimo_id, "w") as id:
-        id.write(str(next_id))
+        id.write(str(next_id + 1))
     

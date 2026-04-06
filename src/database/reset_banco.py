@@ -26,4 +26,4 @@ df_vazio = pd.DataFrame({"id" : pd.Series(dtype="int64"),
 write_deltalake(path, df_vazio, mode = "overwrite", writer_properties = wp)
         
 with open(ultimo_id, "w") as id:
-    id.write("")
+    id.write("0")
