@@ -32,7 +32,6 @@ portas = [2, 4]
 categorias = ["Compacto", "SUV", "Premium", "Utilitário"]
 
 for i in range(1000):
-    id_atual = 0
     next_id = 0
 
     with open(ultimo_id, "r") as id:

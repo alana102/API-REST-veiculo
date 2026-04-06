@@ -35,17 +35,19 @@ class BancoVeiculo:
     
 
     def insert(self, veiculo:Veiculo):
+        novo_id = 0
+
         with open(self.ultimo_id, "r") as id:
             conteudo = id.read()
-            id_antigo = int(conteudo)
+            if conteudo:
+                id_antigo = int(conteudo)
+                novo_id = id_antigo + 1
 
         dt_dataset = DeltaTable(self.path).to_pyarrow_dataset()
         ds_filtro = dt_dataset.to_table(filter=ds.field("placa") == veiculo.placa)
 
         if ds_filtro.num_rows > 0:
             raise ValueError("Veículo já existente")
-
-        novo_id = id_antigo + 1
 
         df_new = pd.DataFrame({"id": [novo_id],
                                "tipo": [veiculo.tipo],
